@@ -1,10 +1,10 @@
 CC=g++
 CFLAGS=-lm -fopenmp
 
-all: proj01
+all: proj02
 
-proj01: proj01.cpp
-	$(CC) $(CFLAGS) proj01.cpp -o proj01
+proj01: proj02.cpp
+	$(CC) $(CFLAGS) proj02.cpp -o proj02
 
 clean:
-	rm -f proj01
+	rm -f proj02

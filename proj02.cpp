@@ -16,17 +16,18 @@
 #define DEBUG	false
 #endif
 
+// Global variables
 int	NowYear;		// 2023 - 2028
 int	NowMonth;		// 0 - 11
 
-
-float x = Ranf(-1.f, 1.f);
 float	NowPrecip;		// inches of rain per month
 float	NowTemp;		// temperature this month
 float	NowHeight;		// rye grass height in inches
-int	NowNumRabbits;		// number of rabbits in the current population
-unsigned int seed = 0;
+int	    NowNumRabbits;		// number of rabbits in the current population
 
+float x = Ranf(-1.f, 1.f);
+
+// Constant variables
 const float RYEGRASS_GROWS_PER_MONTH =		20.0;
 const float ONE_RABBITS_EATS_PER_MONTH =	 1.0;
 
@@ -41,6 +42,7 @@ const float RANDOM_TEMP =			10.0;	// plus or minus noise
 const float MIDTEMP =				60.0;
 const float MIDPRECIP =				14.0;
 
+// Random function
 float
 Ranf( float low, float high )
 {
@@ -115,10 +117,10 @@ main( int argc, char *argv[ ] )
     float ang = (  30.*(float)NowMonth + 15.  ) * ( M_PI / 180. );
 
     float temp = AVG_TEMP - AMP_TEMP * cos( ang );
-    NowTemp = temp + Ranf( &seed, -RANDOM_TEMP, RANDOM_TEMP );
+    NowTemp = temp + Ranf(-RANDOM_TEMP, RANDOM_TEMP );
 
     float precip = AVG_PRECIP_PER_MONTH + AMP_PRECIP_PER_MONTH * sin( ang );
-    NowPrecip = precip + Ranf( &seed,  -RANDOM_PRECIP, RANDOM_PRECIP );
+    NowPrecip = precip + Ranf(-RANDOM_PRECIP, RANDOM_PRECIP);
     if( NowPrecip < 0. )
         NowPrecip = 0.;
 }
