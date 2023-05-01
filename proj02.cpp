@@ -112,6 +112,8 @@ void Rabbits()
         else if (nextNumRabbits > carryingCapacity)
             nextNumRabbits--;
 
+        nextNumRabbits -= (float)NowNumFoxes * ONE_FOXES_EATS_PER_MONTH;
+
         if (nextNumRabbits < 0)
             nextNumRabbits = 0;
 
@@ -209,11 +211,12 @@ void Watcher()
 
 void MyAgent()
 {
+    // I used foxes as my fourth thread
     while (NowYear < 2029)
     {
         int nextNumFoxes = NowNumFoxes;
         int carryingCapacity = (int)(NowNumRabbits);
-        if (nextNumFoxes < carryingCapacity)
+        if (nextNumFoxes < carryingCapacity / 10)
             nextNumFoxes++;
         else if (nextNumFoxes > carryingCapacity)
             nextNumFoxes--;
@@ -258,7 +261,7 @@ int main(int argc, char *argv[])
     NowYear = 2023;
 
     // Starting state:
-    NowNumRabbits = 5;
+    NowNumRabbits = 10;
     NowNumFoxes = 1;
     NowHeight = 5.;
     omp_set_num_threads(4); // same as # of sections
