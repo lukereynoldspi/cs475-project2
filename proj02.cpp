@@ -168,7 +168,7 @@ void Watcher()
     fp = fopen("proj02data.csv", "w+");
 
     fprintf(fp, "Year, Month, Temp in Farenheit, Precipitation Inches, Rabbits Population, Foxes Population, Ryegrass Height Inches\n");
-
+    int MonthCounter = 0;
     while (NowYear < 2029)
     {
         // DoneComputing barrier:
@@ -179,7 +179,7 @@ void Watcher()
 
         // Write results to file, increment time
         fprintf(fp, "%4d,%2d,%6.2lf,%5.2lf,%3d,%3d,%6.2lf\n",
-                NowYear, NowMonth, NowTemp, NowPrecip, NowNumRabbits, NowNumFoxes, NowHeight);
+                NowYear, MonthCounter, NowTemp, NowPrecip, NowNumRabbits, NowNumFoxes, NowHeight);
 
         if (NowMonth < 11)
         {
@@ -191,6 +191,7 @@ void Watcher()
             NowYear++;
         }
 
+        MonthCounter++;
         // Sets up Temp and Precipitation
         float ang = (30. * (float)NowMonth + 15.) * (M_PI / 180.);
 
