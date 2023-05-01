@@ -23,6 +23,7 @@ float NowPrecip;   // inches of rain per month
 float NowTemp;     // temperature this month
 float NowHeight;   // rye grass height in inches
 int NowNumRabbits; // number of rabbits in the current population
+int NowNumFoxes; // number of foxes in the current population
 
 omp_lock_t Lock;
 volatile int NumInThreadTeam;
@@ -32,6 +33,7 @@ volatile int NumGone;
 // Constant variables
 const float RYEGRASS_GROWS_PER_MONTH = 20.0;
 const float ONE_RABBITS_EATS_PER_MONTH = 1.0;
+const float ONE_FOXES_EATS_PER_MONTH = 1.0;
 
 const float AVG_PRECIP_PER_MONTH = 12.0; // average
 const float AMP_PRECIP_PER_MONTH = 4.0;  // plus or minus
@@ -163,7 +165,7 @@ void Watcher()
     FILE *fp;
     fp = fopen("proj02data.csv", "w+");
 
-    fprintf(fp, "Year, Month, Temp in Farenheit, Precipitation Inches, Rabbits Population, Ryegrass Height Inches\n");
+    fprintf(fp, "Year, Month, Temp in Farenheit, Precipitation Inches, Rabbits Population, Foxes Population, Ryegrass Height Inches\n");
 
     while (NowYear < 2029)
     {
@@ -174,8 +176,8 @@ void Watcher()
         WaitBarrier();
 
         // Write results to file, increment time
-        fprintf(fp, "%4d,%2d,%6.2lf,%5.2lf,%3d,%6.2lf\n",
-                NowYear, NowMonth, NowTemp, NowPrecip, NowNumRabbits, NowHeight);
+        fprintf(fp, "%4d,%2d,%6.2lf,%5.2lf,%3d,%3d,%6.2lf\n",
+                NowYear, NowMonth, NowTemp, NowPrecip, NowNumRabbits, NowNumFoxes, NowHeight);
 
         if (NowMonth < 11)
         {
@@ -209,13 +211,20 @@ void MyAgent()
 {
     while (NowYear < 2029)
     {
-        // compute a temporary next-value for this quantity
-        // based on the current state of the simulation:
+        int nextNumFoxes = NowNumFoxes;
+        int carryingCapacity = (int)(NowNumRabbits);
+        if (nextNumFoxes < carryingCapacity)
+            nextNumFoxes++;
+        else if (nextNumFoxes > carryingCapacity)
+            nextNumFoxes--;
+
+        if (nextNumFoxes < 0)
+            nextNumFoxes = 0;
 
         // DoneComputing barrier:
         WaitBarrier();
 
-        // Update local variables to global
+        NowNumFoxes = nextNumFoxes;
 
         // DoneAssigning barrier:
         WaitBarrier();
@@ -249,7 +258,8 @@ int main(int argc, char *argv[])
     NowYear = 2023;
 
     // Starting state:
-    NowNumRabbits = 1;
+    NowNumRabbits = 5;
+    NowNumFoxes = 1;
     NowHeight = 5.;
     omp_set_num_threads(4); // same as # of sections
     InitBarrier(4);
