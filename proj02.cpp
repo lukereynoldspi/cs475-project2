@@ -54,6 +54,12 @@ float Ranf(float low, float high)
 
 float x = Ranf(-1.f, 1.f);
 
+float
+Sqr( float x )
+{
+        return x*x;
+}
+
 // Barrier function template
 void InitBarrier(int n)
 {
@@ -95,21 +101,19 @@ void Rabbits()
 {
     while (NowYear < 2029)
     {
-        // compute a temporary next-value for this quantity
+        // compute a temporary next-value for rabbits
         // based on the current state of the simulation:
-        //. . .
 
         // DoneComputing barrier:
         WaitBarrier();
-        //. . .
+        // Update local rabbit variables to global
 
         // DoneAssigning barrier:
         WaitBarrier();
-        //. . .
 
         // DonePrinting barrier:
         WaitBarrier();
-        //. . .
+
     }
 }
 
@@ -117,24 +121,20 @@ void RyeGrass()
 {
     while (NowYear < 2029)
     {
-        // compute a temporary next-value for this quantity
+        // compute a temporary next-value for rye grass
         // based on the current state of the simulation:
-        //. . .
 
         // DoneComputing barrier:
         WaitBarrier();
 
-        //. . .
+        // Update local rye grass variables to global
 
         // DoneAssigning barrier:
         WaitBarrier();
 
-        //. . .
-
         // DonePrinting barrier:
         WaitBarrier();
 
-        //. . .
     }
 }
 
@@ -142,24 +142,19 @@ void Watcher()
 {
     while (NowYear < 2029)
     {
-        // compute a temporary next-value for this quantity
-        // based on the current state of the simulation:
-        //. . .
 
         // DoneComputing barrier:
         WaitBarrier();
 
-        //. . .
-
         // DoneAssigning barrier:
         WaitBarrier();
 
-        //. . .
+        // Print results, increment time
+        // Calculate new env parameters
 
         // DonePrinting barrier:
         WaitBarrier();
 
-        //. . .
     }
 }
 
@@ -169,28 +164,19 @@ void MyAgent()
     {
         // compute a temporary next-value for this quantity
         // based on the current state of the simulation:
-        //...
 
         // DoneComputing barrier:
         WaitBarrier();
 
-        //...
+        //Update local variables to global
 
         // DoneAssigning barrier:
         WaitBarrier();
 
-        //...
-
         // DonePrinting barrier:
         WaitBarrier();
 
-        //...
     }
-}
-
-float Sqr(float x)
-{
-    return x * x;
 }
 
 int main(int argc, char *argv[])
