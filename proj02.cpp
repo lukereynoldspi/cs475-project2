@@ -141,7 +141,8 @@ void RyeGrass()
 
         nextHeight += tempFactor * precipFactor * RYEGRASS_GROWS_PER_MONTH;
         nextHeight -= (float)NowNumRabbits * ONE_RABBITS_EATS_PER_MONTH;
-        if( nextHeight < 0. ) nextHeight = 0.;
+        if (nextHeight < 0.)
+            nextHeight = 0.;
 
         // DoneComputing barrier:
         WaitBarrier();
@@ -159,21 +160,49 @@ void RyeGrass()
 
 void Watcher()
 {
+    FILE *fp;
+    fp = fopen("proj02data.csv", "w+");
+
+    fprintf(fp, "Year, Month, Temp in Farenheit, Precipitation Inches, Rabbits Population, Ryegrass Height Inches\n");
+
     while (NowYear < 2029)
     {
-
         // DoneComputing barrier:
         WaitBarrier();
 
         // DoneAssigning barrier:
         WaitBarrier();
 
-        // Print results, increment time
-        // Calculate new env parameters
+        // Write results to file, increment time
+        fprintf(fp, "%4d,%2d,%6.2lf,%5.2lf,%3d,%6.2lf\n",
+                NowYear, NowMonth, NowTemp, NowPrecip, NowNumRabbits, NowHeight);
+
+        if (NowMonth < 11)
+        {
+            NowMonth++;
+        }
+        else
+        {
+            NowMonth = 0;
+            NowYear++;
+        }
+
+        // Sets up Temp and Precipitation
+        float ang = (30. * (float)NowMonth + 15.) * (M_PI / 180.);
+
+        float temp = AVG_TEMP - AMP_TEMP * cos(ang);
+        NowTemp = temp + Ranf(-RANDOM_TEMP, RANDOM_TEMP);
+
+        float precip = AVG_PRECIP_PER_MONTH + AMP_PRECIP_PER_MONTH * sin(ang);
+        NowPrecip = precip + Ranf(-RANDOM_PRECIP, RANDOM_PRECIP);
+        if (NowPrecip < 0.)
+            NowPrecip = 0.;
 
         // DonePrinting barrier:
         WaitBarrier();
     }
+
+    fclose(fp);
 }
 
 void MyAgent()
