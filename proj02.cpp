@@ -54,10 +54,9 @@ float Ranf(float low, float high)
 
 float x = Ranf(-1.f, 1.f);
 
-float
-Sqr( float x )
+float Sqr(float x)
 {
-        return x*x;
+    return x * x;
 }
 
 // Barrier function template
@@ -104,16 +103,27 @@ void Rabbits()
         // compute a temporary next-value for rabbits
         // based on the current state of the simulation:
 
+        int nextNumRabbits = NowNumRabbits;
+        int carryingCapacity = (int)(NowHeight);
+        if (nextNumRabbits < carryingCapacity)
+            nextNumRabbits++;
+        else if (nextNumRabbits > carryingCapacity)
+            nextNumRabbits--;
+
+        if (nextNumRabbits < 0)
+            nextNumRabbits = 0;
+
         // DoneComputing barrier:
         WaitBarrier();
+
         // Update local rabbit variables to global
+        NowNumRabbits = nextNumRabbits;
 
         // DoneAssigning barrier:
         WaitBarrier();
 
         // DonePrinting barrier:
         WaitBarrier();
-
     }
 }
 
@@ -124,17 +134,26 @@ void RyeGrass()
         // compute a temporary next-value for rye grass
         // based on the current state of the simulation:
 
+        float nextHeight = NowHeight;
+
+        float tempFactor = exp(-Sqr((NowTemp - MIDTEMP) / 10.));
+        float precipFactor = exp(-Sqr((NowPrecip - MIDPRECIP) / 10.));
+
+        nextHeight += tempFactor * precipFactor * RYEGRASS_GROWS_PER_MONTH;
+        nextHeight -= (float)NowNumRabbits * ONE_RABBITS_EATS_PER_MONTH;
+        if( nextHeight < 0. ) nextHeight = 0.;
+
         // DoneComputing barrier:
         WaitBarrier();
 
         // Update local rye grass variables to global
+        NowHeight = nextHeight;
 
         // DoneAssigning barrier:
         WaitBarrier();
 
         // DonePrinting barrier:
         WaitBarrier();
-
     }
 }
 
@@ -154,7 +173,6 @@ void Watcher()
 
         // DonePrinting barrier:
         WaitBarrier();
-
     }
 }
 
@@ -168,14 +186,13 @@ void MyAgent()
         // DoneComputing barrier:
         WaitBarrier();
 
-        //Update local variables to global
+        // Update local variables to global
 
         // DoneAssigning barrier:
         WaitBarrier();
 
         // DonePrinting barrier:
         WaitBarrier();
-
     }
 }
 
